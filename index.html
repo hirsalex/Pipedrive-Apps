@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Calendly Integration</title>
-    <!-- Einbinden des Pipedrive SDKs -->
     <script src="https://cdn.jsdelivr.net/npm/@pipedrive/app-extensions-sdk@0.8.0/dist/index.umd.js"></script>
 </head>
 <body>
@@ -11,8 +10,24 @@
     <iframe id="calendly-iframe" style="min-width:320px;height:700px;" frameborder="0"></iframe>
 
     <script>
-        // Initialisieren des Pipedrive SDKs
-        const sdk = new AppExtensionsSDK();
+        function getQueryParams() {
+            const params = {};
+            const queryString = window.location.search.substring(1);
+            const queryArray = queryString.split('&');
+            for (let i = 0; i < queryArray.length; i++) {
+                const pair = queryArray[i].split('=');
+                params[pair[0]] = decodeURIComponent(pair[1]);
+            }
+            return params;
+        }
+
+        const queryParams = getQueryParams();
+        console.log('Query Parameters:', queryParams);
+
+        const sdk = new AppExtensionsSDK({
+            identifier: queryParams.id || '123abc' // Verwende den `id` Parameter oder eine Beispiel-ID
+        });
+
         sdk.initialize().then(data => {
             console.log('Pipedrive SDK initialized', data);
             const calendlyUrl = 'https://calendly.com/absicherungsguru-team/guru_eg?hide_event_type_details=1&hide_gdpr_banner=1';
